@@ -6,12 +6,9 @@ COPY go.mod go.sum ./
 RUN go mod download
 RUN go install github.com/cosmtrek/air@latest
 
-COPY ./services/story ./services/story
-COPY ./packages ./packages
+COPY . .
 
 EXPOSE 8081
-
-WORKDIR /app/services/story
 
 RUN go build -o story-service
 
