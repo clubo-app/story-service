@@ -4,6 +4,7 @@ import (
 	sg "github.com/clubo-app/protobuf/story"
 	"github.com/gofrs/uuid"
 	"github.com/mmcloughlin/geohash"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Story struct {
@@ -44,6 +45,6 @@ func (s Story) ToPublicStory() *sg.PublicStory {
 		Long:          float32(lon),
 		Url:           s.Url,
 		TaggedFriends: s.TaggedFriends,
-		CreatedAt:     t.String(),
+		CreatedAt:     timestamppb.New(t),
 	}
 }

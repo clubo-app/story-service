@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/aws/aws-sdk-go v1.44.24
 	github.com/clubo-app/packages v0.0.0-20220527175458-6c8e7d7935c9
-	github.com/clubo-app/protobuf v0.0.0-20220527194713-edc207a1d44f
+	github.com/clubo-app/protobuf v0.0.0-20220601172316-8dde70f4bcaa
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/gofrs/uuid v4.2.0+incompatible
 	github.com/mmcloughlin/geohash v0.10.0
