@@ -6,5 +6,5 @@ CREATE TABLE stories (
     tagged_friends TEXT[]
 );
 
-CREATE UNIQUE INDEX user_id_idx ON stories (user_id);
-CREATE UNIQUE INDEX party_id_idx ON stories (party_id);
+CREATE INDEX user_id_idx ON stories (user_id);
+CREATE INDEX party_id_idx ON stories (party_id);
