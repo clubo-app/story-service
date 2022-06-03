@@ -15,15 +15,15 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	sess, err := repository.NewDB(c.CQL_KEYSPACE, c.CQL_HOSTS)
+	pool, err := repository.NewPGXPool(c.DB_USER, c.DB_PW, c.DB_NAME, c.DB_HOST, c.DB_PORT)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer sess.Close()
+	defer pool.Close()
 
-	dao := repository.NewDAO(&sess)
+	q := repository.New(pool)
 
-	s := service.NewStoryServie(dao.NewStoryRepository())
+	s := service.NewStoryServie(q)
 	us := service.NewUploadService(c.SPACES_KEY, c.SPACES_ENDPOINT, c.SPACES_KEY)
 
 	st := rpc.NewStoryServer(s, us)

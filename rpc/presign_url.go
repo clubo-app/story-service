@@ -8,7 +8,6 @@ import (
 )
 
 func (s storyServer) PresignURL(c context.Context, req *sg.PresignURLRequest) (*sg.PresignURLResponse, error) {
-
 	url, err := s.us.PresignURL(c, req.Key)
 	if err != nil {
 		return nil, utils.HandleError(err)

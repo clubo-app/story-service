@@ -2,64 +2,83 @@ package service
 
 import (
 	"context"
-	"errors"
 
-	"github.com/clubo-app/story-service/datastruct"
 	"github.com/clubo-app/story-service/dto"
 	"github.com/clubo-app/story-service/repository"
-	"github.com/gofrs/uuid"
-	"github.com/mmcloughlin/geohash"
+	"github.com/segmentio/ksuid"
 )
 
 const GEOHASH_PRECISION uint = 9
 
 type StoryService interface {
-	Create(c context.Context, s dto.Story) (datastruct.Story, error)
+	Create(c context.Context, s dto.Story) (repository.Story, error)
 	Delete(c context.Context, uId, sId string) error
-	Get(c context.Context, sId string) (datastruct.Story, error)
-	GetByUser(c context.Context, uId string, page []byte, limit uint32) ([]datastruct.Story, []byte, error)
-	GetByParty(c context.Context, pId string, page []byte, limit uint32) ([]datastruct.Story, []byte, error)
+	Get(c context.Context, sId string) (repository.Story, error)
+	GetByUser(ctx context.Context, uId string, offset int32, limit int32) ([]repository.Story, error)
+	GetByParty(ctx context.Context, pId string, offset int32, limit int32) ([]repository.Story, error)
 }
 
 type storyService struct {
-	repo repository.StoryRepository
+	q *repository.Queries
 }
 
-func NewStoryServie(repo repository.StoryRepository) StoryService {
-	return &storyService{repo: repo}
+func NewStoryServie(q *repository.Queries) StoryService {
+	return &storyService{q: q}
 }
 
-func (sService storyService) Create(c context.Context, s dto.Story) (datastruct.Story, error) {
-	uuid, err := uuid.NewV1()
+func (s *storyService) Create(ctx context.Context, ds dto.Story) (repository.Story, error) {
+	res, err := s.q.CreateStory(ctx, repository.CreateStoryParams{
+		ID:            ksuid.New().String(),
+		UserID:        ds.UserId,
+		PartyID:       ds.PartyId,
+		Url:           ds.Url,
+		TaggedFriends: ds.TaggedFriends,
+	})
 	if err != nil {
-		return datastruct.Story{}, errors.New("failed to gen Story id")
+		return repository.Story{}, err
 	}
 
-	gHash := geohash.EncodeWithPrecision(s.Lat, s.Long, GEOHASH_PRECISION)
+	return res, nil
+}
 
-	ds := datastruct.Story{
-		Id:            uuid.String(),
-		PartyId:       s.PartyId,
-		UserId:        s.UserId,
-		GHash:         gHash,
-		Url:           s.Url,
-		TaggedFriends: s.TaggedFriends,
+func (s *storyService) Get(ctx context.Context, id string) (repository.Story, error) {
+	res, err := s.q.GetStory(ctx, id)
+	if err != nil {
+		return repository.Story{}, err
 	}
-	return sService.repo.Create(c, ds)
+
+	return res, nil
 }
 
-func (sService storyService) Get(c context.Context, sId string) (datastruct.Story, error) {
-	return sService.repo.Get(c, sId)
+func (s *storyService) GetByUser(ctx context.Context, uId string, offset int32, limit int32) ([]repository.Story, error) {
+	res, err := s.q.GetStoryByUser(ctx, repository.GetStoryByUserParams{
+		UserID: uId,
+		Limit:  limit,
+		Offset: offset,
+	})
+	if err != nil {
+		return []repository.Story{}, err
+	}
+
+	return res, nil
 }
 
-func (sService storyService) GetByUser(c context.Context, uId string, page []byte, limit uint32) ([]datastruct.Story, []byte, error) {
-	return sService.repo.GetByUser(c, uId, page, limit)
+func (s *storyService) GetByParty(ctx context.Context, pId string, offset int32, limit int32) ([]repository.Story, error) {
+	res, err := s.q.GetStoryByParty(ctx, repository.GetStoryByPartyParams{
+		PartyID: pId,
+		Limit:   limit,
+		Offset:  offset,
+	})
+	if err != nil {
+		return []repository.Story{}, err
+	}
+
+	return res, nil
 }
 
-func (sService storyService) GetByParty(c context.Context, pId string, page []byte, limit uint32) ([]datastruct.Story, []byte, error) {
-	return sService.repo.GetByParty(c, pId, page, limit)
-}
-
-func (sService storyService) Delete(c context.Context, uId, sId string) error {
-	return sService.repo.Delete(c, uId, sId)
+func (s *storyService) Delete(ctx context.Context, uId, sId string) error {
+	return s.q.DeleteStory(ctx, repository.DeleteStoryParams{
+		ID:     sId,
+		UserID: uId,
+	})
 }
