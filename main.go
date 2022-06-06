@@ -15,17 +15,15 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	pool, err := repository.NewPGXPool(c.DB_USER, c.DB_PW, c.DB_NAME, c.DB_HOST, c.DB_PORT)
+	r, err := repository.NewStoryRepository(c.DB_USER, c.DB_PW, c.DB_NAME, c.DB_HOST, c.DB_PORT)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer pool.Close()
+	defer r.Close()
 
-	q := repository.New(pool)
-
-	s := service.NewStoryServie(q)
+	ss := service.NewStoryServie(r)
 	us := service.NewUploadService(c.SPACES_KEY, c.SPACES_ENDPOINT, c.SPACES_KEY)
 
-	st := rpc.NewStoryServer(s, us)
+	st := rpc.NewStoryServer(ss, us)
 	rpc.Start(st, c.PORT)
 }

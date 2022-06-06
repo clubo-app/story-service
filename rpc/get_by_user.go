@@ -8,7 +8,7 @@ import (
 )
 
 func (s storyServer) GetByUser(c context.Context, req *sg.GetByUserRequest) (*sg.PagedStories, error) {
-	stories, err := s.sService.GetByUser(c, req.UserId, req.Offset, req.Limit)
+	stories, err := s.ss.GetByUser(c, req.UserId, req.Offset, req.Limit)
 	if err != nil {
 		return nil, utils.HandleError(err)
 	}

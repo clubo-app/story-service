@@ -15,7 +15,7 @@ func (s storyServer) GetStory(c context.Context, req *sg.GetStoryRequest) (*sg.S
 		return nil, status.Error(codes.InvalidArgument, "Invalid Story id")
 	}
 
-	story, err := s.sService.Get(c, req.StoryId)
+	story, err := s.ss.Get(c, req.StoryId)
 	if err != nil {
 		return nil, status.Error(codes.NotFound, "Story not found")
 	}

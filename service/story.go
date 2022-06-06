@@ -19,15 +19,15 @@ type StoryService interface {
 }
 
 type storyService struct {
-	q *repository.Queries
+	r *repository.StoryRepository
 }
 
-func NewStoryServie(q *repository.Queries) StoryService {
-	return &storyService{q: q}
+func NewStoryServie(r *repository.StoryRepository) StoryService {
+	return &storyService{r: r}
 }
 
 func (s *storyService) Create(ctx context.Context, ds dto.Story) (repository.Story, error) {
-	res, err := s.q.CreateStory(ctx, repository.CreateStoryParams{
+	res, err := s.r.CreateStory(ctx, repository.CreateStoryParams{
 		ID:            ksuid.New().String(),
 		UserID:        ds.UserId,
 		PartyID:       ds.PartyId,
@@ -42,7 +42,7 @@ func (s *storyService) Create(ctx context.Context, ds dto.Story) (repository.Sto
 }
 
 func (s *storyService) Get(ctx context.Context, id string) (repository.Story, error) {
-	res, err := s.q.GetStory(ctx, id)
+	res, err := s.r.GetStory(ctx, id)
 	if err != nil {
 		return repository.Story{}, err
 	}
@@ -51,7 +51,7 @@ func (s *storyService) Get(ctx context.Context, id string) (repository.Story, er
 }
 
 func (s *storyService) GetByUser(ctx context.Context, uId string, offset int32, limit int32) ([]repository.Story, error) {
-	res, err := s.q.GetStoryByUser(ctx, repository.GetStoryByUserParams{
+	res, err := s.r.GetStoryByUser(ctx, repository.GetStoryByUserParams{
 		UserID: uId,
 		Limit:  limit,
 		Offset: offset,
@@ -64,7 +64,7 @@ func (s *storyService) GetByUser(ctx context.Context, uId string, offset int32, 
 }
 
 func (s *storyService) GetByParty(ctx context.Context, pId string, offset int32, limit int32) ([]repository.Story, error) {
-	res, err := s.q.GetStoryByParty(ctx, repository.GetStoryByPartyParams{
+	res, err := s.r.GetStoryByParty(ctx, repository.GetStoryByPartyParams{
 		PartyID: pId,
 		Limit:   limit,
 		Offset:  offset,
@@ -77,7 +77,7 @@ func (s *storyService) GetByParty(ctx context.Context, pId string, offset int32,
 }
 
 func (s *storyService) Delete(ctx context.Context, uId, sId string) error {
-	return s.q.DeleteStory(ctx, repository.DeleteStoryParams{
+	return s.r.DeleteStory(ctx, repository.DeleteStoryParams{
 		ID:     sId,
 		UserID: uId,
 	})

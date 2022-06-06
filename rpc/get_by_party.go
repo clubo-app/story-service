@@ -8,7 +8,7 @@ import (
 )
 
 func (s storyServer) GetByParty(c context.Context, req *sg.GetByPartyRequest) (*sg.PagedStories, error) {
-	stories, err := s.sService.GetByParty(c, req.PartyId, req.Offset, req.Limit)
+	stories, err := s.ss.GetByParty(c, req.PartyId, req.Offset, req.Limit)
 	if err != nil {
 		return nil, utils.HandleError(err)
 	}

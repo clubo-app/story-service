@@ -11,13 +11,13 @@ import (
 )
 
 type storyServer struct {
-	sService service.StoryService
-	us       service.UploadService
+	ss service.StoryService
+	us service.UploadService
 	sg.UnimplementedStoryServiceServer
 }
 
-func NewStoryServer(sService service.StoryService, us service.UploadService) sg.StoryServiceServer {
-	return &storyServer{sService: sService, us: us}
+func NewStoryServer(ss service.StoryService, us service.UploadService) sg.StoryServiceServer {
+	return &storyServer{ss: ss, us: us}
 }
 
 func Start(s sg.StoryServiceServer, port string) {

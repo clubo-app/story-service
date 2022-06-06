@@ -9,7 +9,7 @@ import (
 )
 
 func (s storyServer) DeleteStory(c context.Context, req *sg.DeleteStoryRequest) (*common.MessageResponse, error) {
-	err := s.sService.Delete(c, req.RequesterId, req.StoryId)
+	err := s.ss.Delete(c, req.RequesterId, req.StoryId)
 	if err != nil {
 		return nil, utils.HandleError(err)
 	}
