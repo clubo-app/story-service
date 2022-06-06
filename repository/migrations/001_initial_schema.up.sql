@@ -1,7 +1,7 @@
 CREATE TABLE stories (
     id varchar(27) PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    party_id TEXT NOT NULL,
+    user_id varchar(27) NOT NULL,
+    party_id varchar(27) NOT NULL,
     url TEXT NOT NULL,
     tagged_friends TEXT[]
 );
