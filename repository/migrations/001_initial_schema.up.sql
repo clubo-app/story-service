@@ -1,5 +1,5 @@
 CREATE TABLE stories (
-    id char(27) PRIMARY KEY,
+    id varchar(27) PRIMARY KEY,
     user_id TEXT NOT NULL,
     party_id TEXT NOT NULL,
     url TEXT NOT NULL,
