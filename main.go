@@ -3,10 +3,13 @@ package main
 import (
 	"log"
 
+	"github.com/clubo-app/packages/stream"
 	"github.com/clubo-app/story-service/config"
 	"github.com/clubo-app/story-service/repository"
 	rpc "github.com/clubo-app/story-service/rpc"
 	"github.com/clubo-app/story-service/service"
+	"github.com/go-playground/validator/v10"
+	"github.com/nats-io/nats.go"
 )
 
 func main() {
@@ -15,15 +18,23 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	r, err := repository.NewStoryRepository(c.DB_USER, c.DB_PW, c.DB_NAME, c.DB_HOST, c.DB_PORT)
+	opts := []nats.Option{nats.Name("Story Service")}
+	stream, err := stream.Connect(c.NATS_CLUSTER, opts)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer stream.Close()
+
+	cqlx, err := repository.NewDB(c.CQL_KEYSPACE, c.CQL_HOSTS)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer r.Close()
 
-	ss := service.NewStoryServie(r)
+	dao := repository.NewDAO(cqlx)
+	val := validator.New()
+
 	us := service.NewUploadService(c.SPACES_KEY, c.SPACES_ENDPOINT, c.SPACES_KEY)
 
-	st := rpc.NewStoryServer(ss, us)
+	st := rpc.NewStoryServer(dao.NewStoryRepository(val), us)
 	rpc.Start(st, c.PORT)
 }

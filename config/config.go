@@ -4,14 +4,12 @@ import "github.com/spf13/viper"
 
 type Config struct {
 	PORT            string `mapstructure:"PORT"`
-	DB_NAME         string `mapstructure:"DB_NAME"`
-	DB_USER         string `mapstructure:"DB_USER"`
-	DB_PW           string `mapstructure:"DB_PW"`
-	DB_PORT         uint16 `mapstructure:"DB_PORT"`
-	DB_HOST         string `mapstructure:"DB_HOST"`
 	SPACES_ENDPOINT string `mapstructure:"SPACES_ENDPOINT"`
 	SPACES_KEY      string `mapstructure:"SPACES_TOKEN"`
 	SPACES_SECRET   string `mapstructure:"SPACES_SECRET"`
+	CQL_KEYSPACE    string `mapstructure:"CQL_KEYSPACE"`
+	CQL_HOSTS       string `mapstructure:"CQL_HOSTS"`
+	NATS_CLUSTER    string `mapstructure:"NATS_CLUSTER"`
 }
 
 func LoadConfig() (config Config, err error) {

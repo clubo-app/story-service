@@ -1,7 +1,9 @@
 package dto
 
+import "github.com/segmentio/ksuid"
+
 type Story struct {
-	Id            string
+	Id            ksuid.KSUID
 	PartyId       string
 	UserId        string
 	Url           string
