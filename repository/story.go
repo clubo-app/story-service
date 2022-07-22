@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/clubo-app/story-service/datastruct"
 	"github.com/clubo-app/story-service/dto"
@@ -52,6 +53,7 @@ func (r *storyRepository) Create(ctx context.Context, ds dto.Story) (datastruct.
 	stmt, names := qb.
 		Insert(STORIES_BY_USER).
 		Columns(storyMetadata.Columns...).
+		TTL(time.Hour * 24).
 		ToCql()
 
 	err = r.sess.
