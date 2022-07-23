@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	"log"
 
 	"github.com/clubo-app/packages/utils"
 	sg "github.com/clubo-app/protobuf/story"
@@ -31,7 +30,6 @@ func (s storyServer) CreateStory(c context.Context, req *sg.CreateStoryRequest) 
 	}
 
 	story, err := s.ss.Create(c, d)
-	log.Println(story)
 	if err != nil {
 		return nil, utils.HandleError(err)
 	}

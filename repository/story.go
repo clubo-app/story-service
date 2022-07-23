@@ -136,7 +136,7 @@ type GetByPartyParams struct {
 
 func (r *storyRepository) GetByParty(ctx context.Context, params GetByPartyParams) (res []datastruct.Story, page []byte, err error) {
 	stmt, names := qb.
-		Select(STORIES_BY_USER).
+		Select(STORIES_BY_PARTY).
 		Where(qb.Eq("party_id")).
 		ToCql()
 
