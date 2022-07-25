@@ -33,5 +33,5 @@ func NewDAO(sess *gocqlx.Session) dao {
 }
 
 func (d *dao) NewStoryRepository(val *validator.Validate) StoryRepository {
-	return &storyRepository{sess: d.sess, val: val}
+	return storyRepository{sess: d.sess, val: val}
 }

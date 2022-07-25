@@ -55,12 +55,8 @@ github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMn
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/clubo-app/packages v0.0.0-20220527175458-6c8e7d7935c9 h1:quez2y5lJpiZC48XpDpTOLhxU82W/Ss5RpAaNSQa1ls=
 github.com/clubo-app/packages v0.0.0-20220527175458-6c8e7d7935c9/go.mod h1:aF4EK+TRUS4mSgaGjHCkA1ebA593tSYiSWYQaSqVTGc=
-github.com/clubo-app/protobuf v0.0.0-20220603194354-7970c7a3343c h1:utO/TWTIsZUENHy82LzvpCH5zFlcMij/yErCmjXTFdY=
-github.com/clubo-app/protobuf v0.0.0-20220603194354-7970c7a3343c/go.mod h1:HjqyM6gBb0BF7Vvj+zFYOrZDBaWDEougmcuMmYg9KKU=
-github.com/clubo-app/protobuf v0.0.0-20220722212559-83ffda57547d h1:bmJ4dlMmR3demxwUPq0c5zailaPi3nljuOvYrP9Tzt0=
-github.com/clubo-app/protobuf v0.0.0-20220722212559-83ffda57547d/go.mod h1:HjqyM6gBb0BF7Vvj+zFYOrZDBaWDEougmcuMmYg9KKU=
-github.com/clubo-app/protobuf v0.0.0-20220722214042-16533b89d966 h1:MgN+75ChCb5lHXPaPdI4RAPxMLD9Cgivjsc43xhTC5A=
-github.com/clubo-app/protobuf v0.0.0-20220722214042-16533b89d966/go.mod h1:HjqyM6gBb0BF7Vvj+zFYOrZDBaWDEougmcuMmYg9KKU=
+github.com/clubo-app/protobuf v0.0.0-20220725174145-0c6a2e00a47e h1:DD7nKQHVTRRv3QbWAt+UTS5FRu8tXiuWGfbUp5/Pku0=
+github.com/clubo-app/protobuf v0.0.0-20220725174145-0c6a2e00a47e/go.mod h1:HjqyM6gBb0BF7Vvj+zFYOrZDBaWDEougmcuMmYg9KKU=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=
 github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnhtbo57+VJT5O0JRkEi1Wbu0z5j0R8u5Hbk=

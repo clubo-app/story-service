@@ -11,6 +11,9 @@ import (
 	"github.com/scylladb/gocqlx/v2"
 	"github.com/scylladb/gocqlx/v2/qb"
 	"github.com/scylladb/gocqlx/v2/table"
+	"github.com/segmentio/ksuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -22,6 +25,7 @@ type StoryRepository interface {
 	Create(context.Context, dto.Story) (datastruct.Story, error)
 	Delete(context.Context, DeleteParams) error
 	GetByUser(context.Context, GetByUserParams) ([]datastruct.Story, []byte, error)
+	GetPastByUser(context.Context, GetByUserParams) ([]datastruct.Story, []byte, error)
 	GetByParty(context.Context, GetByPartyParams) ([]datastruct.Story, []byte, error)
 }
 
@@ -36,7 +40,7 @@ type storyRepository struct {
 	val  *validator.Validate
 }
 
-func (r *storyRepository) Create(ctx context.Context, ds dto.Story) (datastruct.Story, error) {
+func (r storyRepository) Create(ctx context.Context, ds dto.Story) (datastruct.Story, error) {
 	s := datastruct.Story{
 		Id:            ds.Id.String(),
 		PartyId:       ds.PartyId,
@@ -72,7 +76,7 @@ type DeleteParams struct {
 	UId string
 }
 
-func (r *storyRepository) Delete(ctx context.Context, params DeleteParams) error {
+func (r storyRepository) Delete(ctx context.Context, params DeleteParams) error {
 	stmt, names := qb.
 		Delete(STORIES_BY_USER).
 		Where(qb.Eq("story_id")).
@@ -99,16 +103,23 @@ type GetByUserParams struct {
 	Page  []byte
 }
 
-func (r *storyRepository) GetByUser(ctx context.Context, params GetByUserParams) (res []datastruct.Story, page []byte, err error) {
+func (r storyRepository) GetByUser(ctx context.Context, params GetByUserParams) (res []datastruct.Story, page []byte, err error) {
 	stmt, names := qb.
 		Select(STORIES_BY_USER).
 		Where(qb.Eq("user_id")).
+		Where(qb.GtOrEq("story_id")).
 		ToCql()
+
+	comp, err := ksuid.NewRandomWithTime(time.Now().AddDate(0, 0, -1))
+	if err != nil {
+		return []datastruct.Story{}, nil, status.Error(codes.Internal, "Failed to generate yesterdays timestamp")
+	}
 
 	q := r.sess.
 		ContextQuery(ctx, stmt, names).
 		BindMap((qb.M{
-			"user_id": params.UId,
+			"user_id":  params.UId,
+			"story_id": comp.String(),
 		}))
 	defer q.Release()
 
@@ -134,7 +145,7 @@ type GetByPartyParams struct {
 	Page  []byte
 }
 
-func (r *storyRepository) GetByParty(ctx context.Context, params GetByPartyParams) (res []datastruct.Story, page []byte, err error) {
+func (r storyRepository) GetByParty(ctx context.Context, params GetByPartyParams) (res []datastruct.Story, page []byte, err error) {
 	stmt, names := qb.
 		Select(STORIES_BY_PARTY).
 		Where(qb.Eq("party_id")).
@@ -144,6 +155,42 @@ func (r *storyRepository) GetByParty(ctx context.Context, params GetByPartyParam
 		ContextQuery(ctx, stmt, names).
 		BindMap((qb.M{
 			"party_id": params.PId,
+		}))
+	defer q.Release()
+
+	q.PageState(params.Page)
+	if params.Limit == 0 {
+		q.PageSize(20)
+	} else {
+		q.PageSize(params.Limit)
+	}
+
+	iter := q.Iter()
+	err = iter.Select(&res)
+	if err != nil {
+		return []datastruct.Story{}, nil, errors.New("no stories found")
+	}
+
+	return res, iter.PageState(), nil
+}
+
+func (r storyRepository) GetPastByUser(ctx context.Context, params GetByUserParams) (res []datastruct.Story, page []byte, err error) {
+	stmt, names := qb.
+		Select(STORIES_BY_USER).
+		Where(qb.Eq("user_id")).
+		Where(qb.Lt("story_id")).
+		ToCql()
+
+	comp, err := ksuid.NewRandomWithTime(time.Now().AddDate(0, 0, -1))
+	if err != nil {
+		return []datastruct.Story{}, nil, status.Error(codes.Internal, "Failed to generate yesterdays timestamp")
+	}
+
+	q := r.sess.
+		ContextQuery(ctx, stmt, names).
+		BindMap((qb.M{
+			"user_id":  params.UId,
+			"story_id": comp.String(),
 		}))
 	defer q.Release()
 
